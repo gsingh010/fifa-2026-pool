@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIFA World Cup 2026 Pool</title>
+<style>
+  :root {
+    --gold: #f0b429;
+    --dark: #0a0f1e;
+    --darker: #060a14;
+    --card: #111827;
+    --card2: #1a2235;
+    --border: #2a3555;
+    --text: #e2e8f0;
+    --muted: #8896b3;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--darker); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* Header */
+  header { background: linear-gradient(135deg, #0a0f1e 0%, #1a2a50 50%, #0a0f1e 100%); border-bottom: 2px solid var(--gold); padding: 0; position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 1400px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 1.6rem; font-weight: 900; letter-spacing: -0.5px; }
+  .logo span { color: var(--gold); }
+  .header-sub { color: var(--muted); font-size: 0.8rem; }
+  .header-badge { background: var(--gold); color: #000; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; margin-left: auto; }
+
+  /* Nav tabs */
+  nav { background: var(--dark); border-bottom: 1px solid var(--border); }
+  .nav-inner { max-width: 1400px; margin: 0 auto; display: flex; overflow-x: auto; }
+  .nav-tab { padding: 12px 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; color: var(--muted); user-select: none; }
+  .nav-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* Main */
+  main { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Section title */
+  .section-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+  .section-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+
+  /* Leaderboard */
+  .leaderboard { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  .leaderboard-header { display: grid; grid-template-columns: 50px 1fr 100px 130px 100px; padding: 12px 20px; background: var(--card2); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .lb-row { display: grid; grid-template-columns: 50px 1fr 100px 130px 100px; padding: 14px 20px; border-top: 1px solid var(--border); align-items: center; transition: background 0.15s; cursor: pointer; }
+  .lb-row:hover { background: rgba(255,255,255,0.03); }
+  .lb-row.top1 { background: linear-gradient(90deg, rgba(240,180,41,0.1) 0%, transparent 100%); }
+  .lb-row.top2 { background: linear-gradient(90deg, rgba(192,192,192,0.07) 0%, transparent 100%); }
+  .lb-row.top3 { background: linear-gradient(90deg, rgba(205,127,50,0.07) 0%, transparent 100%); }
+  .rank-badge { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
+  .rank-1 { background: var(--gold); color: #000; }
+  .rank-2 { background: #c0c0c0; color: #000; }
+  .rank-3 { background: #cd7f32; color: #000; }
+  .rank-other { background: var(--card2); color: var(--muted); font-size: 0.8rem; }
+  .participant-name { font-weight: 700; font-size: 0.95rem; }
+  .pts-game { color: var(--blue); font-weight: 700; text-align: center; }
+  .pts-group { color: var(--purple); font-weight: 700; text-align: center; }
+  .pts-total { font-weight: 900; font-size: 1.1rem; text-align: center; color: var(--gold); }
+  .lb-row .pts-total.zero { color: var(--muted); }
+
+  /* Matches grid */
+  .group-section { margin-bottom: 32px; }
+  .group-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .group-pill { background: var(--gold); color: #000; font-weight: 900; font-size: 0.8rem; padding: 4px 12px; border-radius: 20px; }
+  .matches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+  .match-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .match-id { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .match-teams { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; }
+  .team-name { flex: 1; }
+  .team-name.home { text-align: left; }
+  .team-name.away { text-align: right; }
+  .vs-badge { background: var(--card2); color: var(--muted); font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+  .result-area { margin-top: 10px; display: flex; gap: 6px; align-items: center; }
+  .result-btn { flex: 1; padding: 6px 4px; border: 1px solid var(--border); background: var(--card2); color: var(--muted); border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.15s; text-align: center; }
+  .result-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .result-btn.selected-H { background: var(--green); border-color: var(--green); color: #fff; }
+  .result-btn.selected-D { background: var(--gold); border-color: var(--gold); color: #000; }
+  .result-btn.selected-A { background: var(--red); border-color: var(--red); color: #fff; }
+  .result-label { font-size: 0.65rem; color: var(--muted); }
+
+  /* Group picks table */
+  .picks-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .picks-table th { background: var(--card2); padding: 10px 12px; text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .picks-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .picks-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .picks-table .group-tag { background: var(--card2); color: var(--gold); font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; display: inline-block; }
+  .correct { color: var(--green); font-weight: 700; }
+  .partial { color: var(--gold); font-weight: 700; }
+  .wrong { color: var(--red); }
+  .pending { color: var(--muted); }
+
+  /* Participant selector */
+  .participant-select-wrap { margin-bottom: 20px; }
+  .participant-select-wrap select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; outline: none; cursor: pointer; min-width: 200px; }
+  .participant-select-wrap select:focus { border-color: var(--gold); }
+
+  /* Stats bar */
+  .stats-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; flex: 1; min-width: 120px; }
+  .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 4px; }
+  .stat-value { font-size: 1.6rem; font-weight: 900; }
+  .stat-value.gold { color: var(--gold); }
+  .stat-value.blue { color: var(--blue); }
+  .stat-value.purple { color: var(--purple); }
+  .stat-value.green { color: var(--green); }
+
+  /* Best 3rd */
+  .third-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .third-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .third-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 10px; color: var(--gold); }
+  .third-picks { display: flex; flex-wrap: wrap; gap: 6px; }
+  .third-pick { background: var(--card2); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; display: flex; align-items: center; gap: 4px; }
+  .third-pick.correct { background: rgba(40,200,100,0.1); border-color: rgba(40,200,100,0.3); }
+  .third-pick.wrong { opacity: 0.5; }
+  td.consol { color: var(--gold) !important; }
+  .third-rank { color: var(--muted); font-size: 0.65rem; font-weight: 700; }
+
+  /* Scoring rules card */
+  .rules-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; max-width: 500px; margin-bottom: 24px; }
+  .rules-card h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold); margin-bottom: 12px; }
+  .rule-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+  .rule-row:last-child { border-bottom: none; }
+  .rule-pts { font-weight: 800; color: var(--gold); }
+
+  /* Admin toggle */
+  .admin-toggle { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .toggle-label { font-size: 0.8rem; color: var(--muted); }
+  .toggle { position: relative; width: 40px; height: 22px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; inset: 0; background: var(--card2); border-radius: 22px; transition: 0.3s; border: 1px solid var(--border); }
+  .slider:before { content: ''; position: absolute; width: 16px; height: 16px; left: 2px; bottom: 2px; background: var(--muted); border-radius: 50%; transition: 0.3s; }
+  input:checked + .slider { background: var(--gold); border-color: var(--gold); }
+  input:checked + .slider:before { transform: translateX(18px); background: #000; }
+
+  /* Save reminder */
+  .save-bar { background: rgba(240,180,41,0.1); border: 1px solid var(--gold); border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 0.83rem; color: var(--gold); display: none; align-items: center; gap: 10px; }
+  .save-bar.visible { display: flex; }
+  .save-bar button { background: var(--gold); color: #000; border: none; padding: 5px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.8rem; margin-left: auto; }
+
+  /* Picks comparison */
+  .picks-filter { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+  .picks-filter select, .picks-filter input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 0.83rem; outline: none; cursor: pointer; }
+  .picks-filter input { min-width: 200px; }
+
+  /* Progress bar */
+  .progress-wrap { margin-bottom: 20px; }
+  .progress-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 5px; display: flex; justify-content: space-between; }
+  .progress-bar { background: var(--card2); border-radius: 10px; height: 8px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, var(--gold), #ffd700); height: 100%; border-radius: 10px; transition: width 0.3s; }
+
+  /* Game picks matrix */
+  .gp-match-block { background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+  .gp-match-header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--card2); border-bottom: 1px solid var(--border); }
+  .gp-match-id { background: var(--gold); color: #000; font-weight: 900; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; }
+  .gp-match-name { font-weight: 700; font-size: 0.88rem; flex: 1; }
+  .gp-result-badge { font-size: 0.72rem; font-weight: 800; padding: 2px 10px; border-radius: 20px; }
+  .gp-result-H { background: rgba(34,197,94,0.2); color: var(--green); border: 1px solid var(--green); }
+  .gp-result-D { background: rgba(240,180,41,0.2); color: var(--gold); border: 1px solid var(--gold); }
+  .gp-result-A { background: rgba(239,68,68,0.2); color: var(--red); border: 1px solid var(--red); }
+  .gp-result-pending { background: var(--card); color: var(--muted); border: 1px solid var(--border); font-size: 0.72rem; font-weight: 600; padding: 2px 10px; border-radius: 20px; }
+  .gp-picks-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px; align-items: center; }
+  .gp-pick-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 58px; }
+  .gp-pick-name { font-size: 0.62rem; color: var(--muted); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 58px; }
+  .gp-pick-val { font-size: 0.78rem; font-weight: 800; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--card2); color: var(--text); min-width: 42px; text-align: center; }
+  .gp-pick-val.correct { background: rgba(34,197,94,0.2); border-color: var(--green); color: var(--green); }
+  .gp-pick-val.wrong { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.4); color: var(--red); }
+  .gp-stats-row { display: flex; gap: 8px; padding: 0 16px 10px; flex-wrap: wrap; }
+  .gp-stat-chip { font-size: 0.7rem; color: var(--muted); }
+  .gp-stat-chip strong { color: var(--text); }
+
+  .participant-section-title { font-size: 1rem; font-weight: 800; color: var(--gold); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+  /* API setup */
+  .api-setup-bar { background: rgba(240,180,41,0.08); border: 1px solid rgba(240,180,41,0.4); border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
+  .api-setup-inner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .api-icon { font-size: 1.5rem; }
+  .api-setup-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; }
+  .api-setup-sub { font-size: 0.78rem; color: var(--muted); }
+  .api-setup-bar input { background: var(--dark); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; outline: none; flex: 1; min-width: 220px; font-family: monospace; }
+  .api-setup-bar input:focus { border-color: var(--gold); }
+  .api-setup-bar button { background: var(--gold); color: #000; border: none; padding: 9px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
+  .api-setup-bar button:hover { background: #ffd700; }
+
+  /* Live status bar */
+  .live-status-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; flex-wrap: wrap; }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+  .status-dot.live { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 1.5s infinite; }
+  .status-dot.error { background: var(--red); }
+  .status-dot.stale { background: var(--gold); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  #liveStatusText { font-size: 0.82rem; color: var(--muted); flex: 1; }
+  .refresh-btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 4px 12px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; }
+  .refresh-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .disconnect-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 4px 12px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; }
+  .disconnect-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* Match result badges (read-only) */
+  .match-result-badge { display: inline-block; font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; margin-top: 10px; }
+  .match-result-badge.H { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid var(--green); }
+  .match-result-badge.D { background: rgba(240,180,41,0.15); color: var(--gold); border: 1px solid var(--gold); }
+  .match-result-badge.A { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid var(--red); }
+  .match-result-badge.live-now { background: rgba(34,197,94,0.2); color: var(--green); border: 1px solid var(--green); animation: pulse 1.5s infinite; }
+  .match-result-badge.pending { background: var(--card2); color: var(--muted); border: 1px solid var(--border); font-weight: 600; }
+  .match-score { font-size: 1rem; font-weight: 900; margin-top: 8px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .leaderboard-header, .lb-row { grid-template-columns: 44px 1fr 70px 90px 70px; }
+    .header-inner { padding: 10px 14px; }
+    .logo { font-size: 1.2rem; }
+    main { padding: 16px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo">FIFA World Cup <span>2026</span> Pool</div>
+      <div class="header-sub">19 Participants &bull; 72 Group Stage Matches &bull; 12 Groups</div>
+    </div>
+    <div class="header-badge">Live Tracker</div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-tab active" data-tab="leaderboard">🏆 Leaderboard</div>
+    <div class="nav-tab" data-tab="matches">⚽ Matches</div>
+    <div class="nav-tab" data-tab="gamepicks">🎯 Game Picks</div>
+    <div class="nav-tab" data-tab="participant">🔍 Participant Picks</div>
+    <div class="nav-tab" data-tab="rules">📋 Rules</div>
+  </div>
+</nav>
+
+<main>
+
+<!-- LEADERBOARD TAB -->
+<div class="tab-panel active" id="tab-leaderboard">
+  <div class="section-title">Leaderboard</div>
+  <div class="section-sub">Rankings update automatically as match results are entered</div>
+  <div id="leaderboard-container"></div>
+</div>
+
+<!-- MATCHES TAB -->
+<div class="tab-panel" id="tab-matches">
+  <div class="section-title">Group Stage Matches</div>
+  <div class="section-sub">Results are pulled live and refresh every 60 seconds.</div>
+  <div class="live-status-bar" id="liveStatusBar">
+    <span id="liveStatusDot" class="status-dot"></span>
+    <span id="liveStatusText">Connecting…</span>
+    <button class="refresh-btn" onclick="fetchLiveResults()">↻ Refresh now</button>
+  </div>
+  <div id="matches-container"></div>
+</div>
+
+<!-- GAME PICKS TAB -->
+<div class="tab-panel" id="tab-gamepicks">
+  <div class="section-title">Game Picks</div>
+  <div class="section-sub">All participants' predictions for every match — color coded once results are entered</div>
+  <div class="picks-filter">
+    <select id="gpkGroupFilter" onchange="renderGamePicks()">
+      <option value="">All Groups</option>
+      <option>A</option><option>B</option><option>C</option><option>D</option>
+      <option>E</option><option>F</option><option>G</option><option>H</option>
+      <option>I</option><option>J</option><option>K</option><option>L</option>
+    </select>
+    <div style="font-size:0.78rem;color:var(--muted);display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;background:var(--green);border-radius:3px;display:inline-block"></span>Correct pick</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;background:var(--red);border-radius:3px;display:inline-block;opacity:0.7"></span>Wrong pick</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:12px;height:12px;background:var(--card2);border-radius:3px;display:inline-block;border:1px solid var(--border)"></span>Pending</span>
+    </div>
+  </div>
+  <div id="gamepicks-container"></div>
+</div>
+
+<!-- PARTICIPANT PICKS TAB -->
+<div class="tab-panel" id="tab-participant">
+  <div class="section-title">Participant Picks</div>
+  <div class="section-sub">Select a participant to see all their game picks, group position picks, and best 3rd place rankings</div>
+  <div class="participant-select-wrap">
+    <select id="participantPicker" onchange="renderParticipantPicks()">
+      <option value="">Select a participant...</option>
+    </select>
+  </div>
+  <div id="participant-stats"></div>
+  <div id="participant-container"></div>
+</div>
+
+<!-- RULES TAB -->
+<div class="tab-panel" id="tab-rules">
+  <div class="section-title">Scoring Rules</div>
+  <div class="section-sub">How points are calculated</div>
+  <div class="rules-card">
+    <h3>Point System</h3>
+    <div class="rule-row"><span>Correct game result (Win or Tie)</span><span class="rule-pts">1 pt / game</span></div>
+    <div class="rule-row"><span>Correct 1st place pick</span><span class="rule-pts">5 pts</span></div>
+    <div class="rule-row"><span>Correct 2nd place pick</span><span class="rule-pts">4 pts</span></div>
+    <div class="rule-row"><span>Correct 3rd qualifying team</span><span class="rule-pts">3 pts</span></div>
+    <div class="rule-row"><span>Team qualified (wrong order)</span><span class="rule-pts">2 pts</span></div>
+  </div>
+  <div class="rules-card">
+    <h3>Pick Codes</h3>
+    <div class="rule-row"><span><strong>H</strong> — Home win</span></div>
+    <div class="rule-row"><span><strong>D</strong> — Draw / Tie</span></div>
+    <div class="rule-row"><span><strong>A</strong> — Away win</span></div>
+  </div>
+  <div class="rules-card" style="max-width:700px">
+    <h3>How to Use</h3>
+    <div style="font-size:0.85rem;line-height:1.7;color:var(--muted)">
+      <p>1. Go to the <strong style="color:var(--text)">Matches</strong> tab and enable editing to enter actual game results.</p>
+      <p>2. Results are saved in your browser's local storage.</p>
+      <p>3. The <strong style="color:var(--text)">Leaderboard</strong> updates automatically based on entered results.</p>
+      <p>4. Use <strong style="color:var(--text)">My Picks</strong> to see a detailed breakdown for any participant.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ====================== DATA ======================
+
+const PARTICIPANTS = ["Gurdit","Jeremy","Will","Freddie","Mark","JoTavious","Jeff","Rodo","Christian","Gilbert","Ice","Cesar","Kelly","David","Ronaldo","Julian","Andy","Parker","Juan"];
+
+const MATCHES = [
+  {id:"A1",group:"A",home:"Mexico",away:"South Africa"},
+  {id:"A2",group:"A",home:"South Korea",away:"Czech Republic"},
+  {id:"A3",group:"A",home:"Mexico",away:"South Korea"},
+  {id:"A4",group:"A",home:"Czech Republic",away:"South Africa"},
+  {id:"A5",group:"A",home:"Czech Republic",away:"Mexico"},
+  {id:"A6",group:"A",home:"South Africa",away:"South Korea"},
+  {id:"B1",group:"B",home:"Canada",away:"Bosnia and Herzegovina"},
+  {id:"B2",group:"B",home:"Qatar",away:"Switzerland"},
+  {id:"B3",group:"B",home:"Canada",away:"Qatar"},
+  {id:"B4",group:"B",home:"Switzerland",away:"Bosnia and Herzegovina"},
+  {id:"B5",group:"B",home:"Switzerland",away:"Canada"},
+  {id:"B6",group:"B",home:"Bosnia and Herzegovina",away:"Qatar"},
+  {id:"C1",group:"C",home:"Brazil",away:"Morocco"},
+  {id:"C2",group:"C",home:"Haiti",away:"Scotland"},
+  {id:"C3",group:"C",home:"Brazil",away:"Haiti"},
+  {id:"C4",group:"C",home:"Scotland",away:"Morocco"},
+  {id:"C5",group:"C",home:"Scotland",away:"Brazil"},
+  {id:"C6",group:"C",home:"Morocco",away:"Haiti"},
+  {id:"D1",group:"D",home:"United States",away:"Paraguay"},
+  {id:"D2",group:"D",home:"Australia",away:"Turkey"},
+  {id:"D3",group:"D",home:"United States",away:"Australia"},
+  {id:"D4",group:"D",home:"Turkey",away:"Paraguay"},
+  {id:"D5",group:"D",home:"Turkey",away:"United States"},
+  {id:"D6",group:"D",home:"Paraguay",away:"Australia"},
+  {id:"E1",group:"E",home:"Germany",away:"Curaçao"},
+  {id:"E2",group:"E",home:"Ivory Coast",away:"Ecuador"},
+  {id:"E3",group:"E",home:"Germany",away:"Ivory Coast"},
+  {id:"E4",group:"E",home:"Ecuador",away:"Curaçao"},
+  {id:"E5",group:"E",home:"Ecuador",away:"Germany"},
+  {id:"E6",group:"E",home:"Curaçao",away:"Ivory Coast"},
+  {id:"F1",group:"F",home:"Netherlands",away:"Japan"},
+  {id:"F2",group:"F",home:"Sweden",away:"Tunisia"},
+  {id:"F3",group:"F",home:"Netherlands",away:"Sweden"},
+  {id:"F4",group:"F",home:"Tunisia",away:"Japan"},
+  {id:"F5",group:"F",home:"Tunisia",away:"Netherlands"},
+  {id:"F6",group:"F",home:"Japan",away:"Sweden"},
+  {id:"G1",group:"G",home:"Belgium",away:"Egypt"},
+  {id:"G2",group:"G",home:"Iran",away:"New Zealand"},
+  {id:"G3",group:"G",home:"Belgium",away:"Iran"},
+  {id:"G4",group:"G",home:"New Zealand",away:"Egypt"},
+  {id:"G5",group:"G",home:"New Zealand",away:"Belgium"},
+  {id:"G6",group:"G",home:"Egypt",away:"Iran"},
+  {id:"H1",group:"H",home:"Spain",away:"Cape Verde"},
+  {id:"H2",group:"H",home:"Saudi Arabia",away:"Uruguay"},
+  {id:"H3",group:"H",home:"Spain",away:"Saudi Arabia"},
+  {id:"H4",group:"H",home:"Uruguay",away:"Cape Verde"},
+  {id:"H5",group:"H",home:"Uruguay",away:"Spain"},
+  {id:"H6",group:"H",home:"Cape Verde",away:"Saudi Arabia"},
+  {id:"I1",group:"I",home:"France",away:"Senegal"},
+  {id:"I2",group:"I",home:"Iraq",away:"Norway"},
+  {id:"I3",group:"I",home:"Norway",away:"France"},
+  {id:"I4",group:"I",home:"Senegal",away:"Iraq"},
+  {id:"I5",group:"I",home:"France",away:"Iraq"},
+  {id:"I6",group:"I",home:"Norway",away:"Senegal"},
+  {id:"J1",group:"J",home:"Argentina",away:"Algeria"},
+  {id:"J2",group:"J",home:"Austria",away:"Jordan"},
+  {id:"J3",group:"J",home:"Argentina",away:"Austria"},
+  {id:"J4",group:"J",home:"Jordan",away:"Algeria"},
+  {id:"J5",group:"J",home:"Jordan",away:"Argentina"},
+  {id:"J6",group:"J",home:"Algeria",away:"Austria"},
+  {id:"K1",group:"K",home:"Portugal",away:"DR Congo"},
+  {id:"K2",group:"K",home:"Uzbekistan",away:"Colombia"},
+  {id:"K3",group:"K",home:"Portugal",away:"Uzbekistan"},
+  {id:"K4",group:"K",home:"Colombia",away:"DR Congo"},
+  {id:"K5",group:"K",home:"Colombia",away:"Portugal"},
+  {id:"K6",group:"K",home:"DR Congo",away:"Uzbekistan"},
+  {id:"L1",group:"L",home:"England",away:"Croatia"},
+  {id:"L2",group:"L",home:"Ghana",away:"Panama"},
+  {id:"L3",group:"L",home:"England",away:"Ghana"},
+  {id:"L4",group:"L",home:"Panama",away:"Croatia"},
+  {id:"L5",group:"L",home:"Panama",away:"England"},
+  {id:"L6",group:"L",home:"Croatia",away:"Ghana"},
+];
+
+// Game picks: {participantName: {matchId: "H"|"D"|"A"}}
+const GAME_PICKS = {
+  "Gurdit":{"A1":"H","A2":"A","A3":"D","A4":"D","A5":"A","A6":"A","B1":"H","B2":"A","B3":"H","B4":"H","B5":"D","B6":"H","C1":"H","C2":"A","C3":"H","C4":"D","C5":"A","C6":"H","D1":"H","D2":"A","D3":"H","D4":"D","D5":"A","D6":"D","E1":"H","E2":"A","E3":"H","E4":"H","E5":"D","E6":"A","F1":"D","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"H","G3":"H","G4":"A","G5":"A","G6":"H","H1":"H","H2":"A","H3":"H","H4":"D","H5":"A","H6":"H","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"D","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"D","K1":"H","K2":"A","K3":"H","K4":"H","K5":"A","K6":"H","L1":"H","L2":"D","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Jeremy":{"A1":"H","A2":"H","A3":"D","A4":"H","A5":"A","A6":"A","B1":"H","B2":"A","B3":"H","B4":"H","B5":"H","B6":"D","C1":"D","C2":"A","C3":"H","C4":"A","C5":"A","C6":"H","D1":"D","D2":"D","D3":"H","D4":"H","D5":"D","D6":"H","E1":"H","E2":"A","E3":"H","E4":"D","E5":"A","E6":"H","F1":"A","F2":"H","F3":"D","F4":"A","F5":"A","F6":"A","G1":"H","G2":"H","G3":"H","G4":"D","G5":"A","G6":"H","H1":"H","H2":"A","H3":"H","H4":"H","H5":"H","H6":"D","I1":"H","I2":"A","I3":"D","I4":"D","I5":"H","I6":"H","J1":"H","J2":"H","J3":"H","J4":"D","J5":"A","J6":"D","K1":"H","K2":"A","K3":"H","K4":"H","K5":"A","K6":"H","L1":"D","L2":"A","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Will":{"A1":"H","A2":"D","A3":"D","A4":"D","A5":"A","A6":"A","B1":"H","B2":"D","B3":"H","B4":"A","B5":"D","B6":"A","C1":"H","C2":"D","C3":"H","C4":"H","C5":"D","C6":"H","D1":"D","D2":"H","D3":"H","D4":"A","D5":"A","D6":"D","E1":"H","E2":"A","E3":"H","E4":"H","E5":"A","E6":"A","F1":"D","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"D","G2":"A","G3":"H","G4":"D","G5":"A","G6":"H","H1":"H","H2":"A","H3":"H","H4":"H","H5":"D","H6":"D","I1":"H","I2":"A","I3":"D","I4":"D","I5":"H","I6":"H","J1":"H","J2":"H","J3":"D","J4":"A","J5":"A","J6":"D","K1":"H","K2":"A","K3":"H","K4":"H","K5":"H","K6":"D","L1":"H","L2":"A","L3":"H","L4":"D","L5":"D","L6":"H"},
+  "Freddie":{"A1":"H","A2":"H","A3":"H","A4":"A","A5":"A","A6":"A","B1":"D","B2":"A","B3":"A","B4":"H","B5":"H","B6":"A","C1":"A","C2":"A","C3":"H","C4":"A","C5":"A","C6":"H","D1":"D","D2":"A","D3":"H","D4":"H","D5":"H","D6":"D","E1":"H","E2":"A","E3":"H","E4":"H","E5":"D","E6":"A","F1":"A","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"H","G3":"D","G4":"A","G5":"A","G6":"A","H1":"H","H2":"A","H3":"H","H4":"H","H5":"A","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"H","J1":"H","J2":"A","J3":"H","J4":"A","J5":"A","J6":"H","K1":"H","K2":"A","K3":"H","K4":"H","K5":"A","K6":"D","L1":"H","L2":"H","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Mark":{"A1":"H","A2":"H","A3":"D","A4":"A","A5":"A","A6":"A","B1":"H","B2":"A","B3":"H","B4":"H","B5":"H","B6":"H","C1":"A","C2":"A","C3":"H","C4":"A","C5":"A","C6":"H","D1":"H","D2":"A","D3":"H","D4":"H","D5":"D","D6":"A","E1":"H","E2":"D","E3":"H","E4":"H","E5":"D","E6":"A","F1":"A","F2":"H","F3":"D","F4":"A","F5":"A","F6":"H","G1":"D","G2":"H","G3":"H","G4":"A","G5":"A","G6":"H","H1":"H","H2":"A","H3":"H","H4":"H","H5":"A","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"A","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"D","K1":"D","K2":"D","K3":"H","K4":"A","K5":"A","K6":"D","L1":"H","L2":"H","L3":"H","L4":"A","L5":"A","L6":"D"},
+  "JoTavious":{"A1":"H","A2":"D","A3":"H","A4":"H","A5":"D","A6":"H","B1":"D","B2":"H","B3":"A","B4":"D","B5":"H","B6":"A","C1":"H","C2":"H","C3":"H","C4":"A","C5":"A","C6":"A","D1":"H","D2":"H","D3":"D","D4":"A","D5":"H","D6":"A","E1":"H","E2":"H","E3":"H","E4":"H","E5":"H","E6":"D","F1":"D","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"H","G3":"H","G4":"D","G5":"A","G6":"H","H1":"H","H2":"H","H3":"H","H4":"D","H5":"H","H6":"A","I1":"H","I2":"A","I3":"A","I4":"D","I5":"H","I6":"A","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"H","K1":"H","K2":"H","K3":"D","K4":"A","K5":"H","K6":"A","L1":"D","L2":"H","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Jeff":{"A1":"H","A2":"A","A3":"H","A4":"A","A5":"A","A6":"H","B1":"H","B2":"H","B3":"A","B4":"D","B5":"H","B6":"D","C1":"A","C2":"H","C3":"H","C4":"A","C5":"A","C6":"A","D1":"H","D2":"D","D3":"D","D4":"H","D5":"H","D6":"H","E1":"H","E2":"H","E3":"A","E4":"H","E5":"H","E6":"D","F1":"H","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"H","G3":"A","G4":"A","G5":"H","G6":"H","H1":"H","H2":"H","H3":"H","H4":"A","H5":"H","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"A","J1":"H","J2":"D","J3":"H","J4":"H","J5":"A","J6":"H","K1":"H","K2":"H","K3":"H","K4":"H","K5":"H","K6":"A","L1":"H","L2":"H","L3":"H","L4":"A","L5":"D","L6":"A"},
+  "Rodo":{"A1":"H","A2":"D","A3":"H","A4":"D","A5":"H","A6":"H","B1":"H","B2":"A","B3":"H","B4":"H","B5":"A","B6":"H","C1":"A","C2":"H","C3":"H","C4":"A","C5":"A","C6":"A","D1":"H","D2":"A","D3":"H","D4":"D","D5":"H","D6":"A","E1":"H","E2":"D","E3":"H","E4":"H","E5":"H","E6":"H","F1":"A","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"H","G3":"H","G4":"A","G5":"A","G6":"D","H1":"H","H2":"H","H3":"H","H4":"H","H5":"H","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"A","J1":"H","J2":"H","J3":"H","J4":"D","J5":"A","J6":"H","K1":"H","K2":"H","K3":"D","K4":"H","K5":"H","K6":"A","L1":"D","L2":"D","L3":"H","L4":"A","L5":"A","L6":"A"},
+  "Christian":{"A1":"H","A2":"D","A3":"H","A4":"H","A5":"A","A6":"H","B1":"H","B2":"H","B3":"H","B4":"H","B5":"H","B6":"A","C1":"H","C2":"H","C3":"H","C4":"A","C5":"A","C6":"A","D1":"A","D2":"H","D3":"H","D4":"A","D5":"A","D6":"H","E1":"H","E2":"H","E3":"H","E4":"A","E5":"H","E6":"A","F1":"A","F2":"H","F3":"D","F4":"A","F5":"A","F6":"A","G1":"H","G2":"H","G3":"H","G4":"A","G5":"H","G6":"A","H1":"H","H2":"H","H3":"D","H4":"H","H5":"H","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"A","J1":"H","J2":"H","J3":"H","J4":"H","J5":"D","J6":"H","K1":"H","K2":"H","K3":"H","K4":"H","K5":"H","K6":"A","L1":"H","L2":"H","L3":"H","L4":"H","L5":"H","L6":"A"},
+  "Gilbert":{"A1":"H","A2":"H","A3":"D","A4":"H","A5":"A","A6":"A","B1":"H","B2":"A","B3":"D","B4":"H","B5":"H","B6":"D","C1":"H","C2":"A","C3":"H","C4":"A","C5":"A","C6":"H","D1":"H","D2":"A","D3":"H","D4":"H","D5":"H","D6":"D","E1":"H","E2":"D","E3":"H","E4":"H","E5":"D","E6":"A","F1":"H","F2":"H","F3":"D","F4":"A","F5":"A","F6":"D","G1":"H","G2":"H","G3":"H","G4":"A","G5":"A","G6":"H","H1":"H","H2":"A","H3":"H","H4":"H","H5":"D","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"D","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"D","K1":"H","K2":"A","K3":"H","K4":"H","K5":"A","K6":"H","L1":"D","L2":"H","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Ice":{"A1":"H","A2":"A","A3":"D","A4":"H","A5":"A","A6":"A","B1":"H","B2":"A","B3":"H","B4":"H","B5":"H","B6":"H","C1":"A","C2":"A","C3":"H","C4":"A","C5":"A","C6":"H","D1":"D","D2":"A","D3":"H","D4":"A","D5":"H","D6":"H","E1":"H","E2":"H","E3":"H","E4":"H","E5":"A","E6":"A","F1":"H","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"A","G3":"H","G4":"D","G5":"A","G6":"H","H1":"H","H2":"A","H3":"H","H4":"H","H5":"A","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"A","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"H","K1":"H","K2":"A","K3":"H","K4":"H","K5":"D","K6":"H","L1":"H","L2":"A","L3":"H","L4":"H","L5":"H","L6":"H"},
+  "Cesar":{"A1":"H","A2":"D","A3":"H","A4":"H","A5":"A","A6":"A","B1":"H","B2":"A","B3":"H","B4":"H","B5":"D","B6":"D","C1":"D","C2":"A","C3":"H","C4":"A","C5":"A","C6":"H","D1":"D","D2":"A","D3":"H","D4":"D","D5":"A","D6":"H","E1":"H","E2":"D","E3":"H","E4":"H","E5":"A","E6":"A","F1":"H","F2":"H","F3":"H","F4":"A","F5":"A","F6":"A","G1":"H","G2":"A","G3":"H","G4":"D","G5":"A","G6":"H","H1":"H","H2":"A","H3":"H","H4":"H","H5":"A","H6":"D","I1":"H","I2":"A","I3":"A","I4":"D","I5":"H","I6":"H","J1":"H","J2":"H","J3":"H","J4":"D","J5":"A","J6":"A","K1":"H","K2":"A","K3":"H","K4":"H","K5":"D","K6":"H","L1":"H","L2":"D","L3":"H","L4":"A","L5":"A","L6":"D"},
+  "Kelly":{"A1":"H","A2":"H","A3":"D","A4":"A","A5":"A","A6":"D","B1":"H","B2":"A","B3":"H","B4":"H","B5":"D","B6":"D","C1":"D","C2":"A","C3":"H","C4":"A","C5":"A","C6":"H","D1":"H","D2":"A","D3":"H","D4":"H","D5":"D","D6":"D","E1":"H","E2":"D","E3":"H","E4":"H","E5":"A","E6":"A","F1":"H","F2":"H","F3":"H","F4":"A","F5":"A","F6":"D","G1":"H","G2":"D","G3":"H","G4":"D","G5":"A","G6":"D","H1":"H","H2":"A","H3":"H","H4":"H","H5":"A","H6":"A","I1":"H","I2":"A","I3":"A","I4":"D","I5":"H","I6":"H","J1":"H","J2":"D","J3":"H","J4":"A","J5":"A","J6":"H","K1":"H","K2":"A","K3":"H","K4":"H","K5":"D","K6":"H","L1":"D","L2":"D","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "David":{"A1":"H","A2":"D","A3":"H","A4":"H","A5":"H","A6":"H","B1":"H","B2":"H","B3":"D","B4":"A","B5":"H","B6":"A","C1":"H","C2":"H","C3":"H","C4":"A","C5":"A","C6":"A","D1":"H","D2":"H","D3":"H","D4":"D","D5":"H","D6":"A","E1":"H","E2":"H","E3":"H","E4":"H","E5":"H","E6":"H","F1":"A","F2":"H","F3":"H","F4":"H","F5":"D","F6":"H","G1":"H","G2":"H","G3":"H","G4":"A","G5":"A","G6":"D","H1":"H","H2":"H","H3":"D","H4":"H","H5":"H","H6":"A","I1":"H","I2":"A","I3":"A","I4":"A","I5":"H","I6":"A","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"H","K1":"H","K2":"H","K3":"H","K4":"A","K5":"H","K6":"A","L1":"H","L2":"H","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Ronaldo":{"A1":"H","A2":"D","A3":"H","A4":"D","A5":"A","A6":"H","B1":"H","B2":"H","B3":"D","B4":"D","B5":"H","B6":"A","C1":"D","C2":"H","C3":"H","C4":"A","C5":"A","C6":"A","D1":"H","D2":"H","D3":"D","D4":"D","D5":"H","D6":"A","E1":"H","E2":"H","E3":"H","E4":"H","E5":"H","E6":"D","F1":"H","F2":"H","F3":"H","F4":"D","F5":"A","F6":"H","G1":"H","G2":"H","G3":"H","G4":"D","G5":"D","G6":"D","H1":"H","H2":"H","H3":"H","H4":"H","H5":"H","H6":"A","I1":"H","I2":"A","I3":"A","I4":"A","I5":"D","I6":"A","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"D","K1":"H","K2":"H","K3":"D","K4":"A","K5":"H","K6":"A","L1":"D","L2":"H","L3":"H","L4":"A","L5":"A","L6":"D"},
+  "Julian":{"A1":"H","A2":"H","A3":"H","A4":"A","A5":"A","A6":"A","B1":"H","B2":"H","B3":"D","B4":"H","B5":"A","B6":"A","C1":"H","C2":"A","C3":"H","C4":"A","C5":"A","C6":"D","D1":"H","D2":"D","D3":"H","D4":"A","D5":"A","D6":"H","E1":"H","E2":"A","E3":"H","E4":"H","E5":"A","E6":"A","F1":"A","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"H","G3":"H","G4":"A","G5":"A","G6":"A","H1":"H","H2":"A","H3":"H","H4":"H","H5":"A","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"H","J1":"H","J2":"H","J3":"H","J4":"D","J5":"A","J6":"D","K1":"H","K2":"A","K3":"H","K4":"H","K5":"A","K6":"A","L1":"H","L2":"A","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Andy":{"A1":"H","A2":"H","A3":"D","A4":"D","A5":"A","A6":"A","B1":"H","B2":"A","B3":"H","B4":"H","B5":"H","B6":"D","C1":"D","C2":"A","C3":"H","C4":"D","C5":"A","C6":"H","D1":"A","D2":"A","D3":"H","D4":"D","D5":"D","D6":"H","E1":"H","E2":"D","E3":"D","E4":"H","E5":"A","E6":"A","F1":"D","F2":"H","F3":"H","F4":"A","F5":"A","F6":"D","G1":"D","G2":"D","G3":"H","G4":"A","G5":"A","G6":"H","H1":"H","H2":"D","H3":"H","H4":"H","H5":"D","H6":"A","I1":"H","I2":"A","I3":"A","I4":"H","I5":"H","I6":"H","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"H","K1":"H","K2":"A","K3":"H","K4":"H","K5":"D","K6":"A","L1":"D","L2":"A","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Parker":{"A1":"D","A2":"H","A3":"A","A4":"A","A5":"A","A6":"A","B1":"H","B2":"A","B3":"H","B4":"H","B5":"H","B6":"D","C1":"D","C2":"A","C3":"H","C4":"D","C5":"A","C6":"H","D1":"H","D2":"A","D3":"D","D4":"H","D5":"A","D6":"A","E1":"H","E2":"A","E3":"H","E4":"H","E5":"D","E6":"A","F1":"D","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"D","G3":"H","G4":"D","G5":"A","G6":"H","H1":"H","H2":"D","H3":"H","H4":"H","H5":"A","H6":"A","I1":"H","I2":"A","I3":"A","I4":"D","I5":"H","I6":"H","J1":"H","J2":"H","J3":"H","J4":"A","J5":"A","J6":"D","K1":"H","K2":"D","K3":"H","K4":"H","K5":"H","K6":"H","L1":"D","L2":"H","L3":"H","L4":"A","L5":"A","L6":"H"},
+  "Juan":{"A1":"H","A2":"A","A3":"H","A4":"H","A5":"D","A6":"H","B1":"H","B2":"H","B3":"A","B4":"D","B5":"H","B6":"A","C1":"H","C2":"H","C3":"H","C4":"A","C5":"A","C6":"A","D1":"D","D2":"H","D3":"A","D4":"D","D5":"H","D6":"D","E1":"H","E2":"D","E3":"A","E4":"H","E5":"H","E6":"D","F1":"A","F2":"H","F3":"H","F4":"A","F5":"A","F6":"H","G1":"H","G2":"H","G3":"H","G4":"D","G5":"A","G6":"D","H1":"H","H2":"H","H3":"H","H4":"D","H5":"H","H6":"A","I1":"H","I2":"A","I3":"A","I4":"A","I5":"H","I6":"A","J1":"H","J2":"H","J3":"H","J4":"H","J5":"D","J6":"D","K1":"H","K2":"H","K3":"A","K4":"H","K5":"H","K6":"A","L1":"H","L2":"H","L3":"H","L4":"A","L5":"A","L6":"H"},
+};
+
+// Group position picks: {participantName: {group: {first, second, third}}}
+const GROUP_PICKS = {
+  "Gurdit":{"A":{"first":"Mexico","second":"South Korea","third":"Czechia"},"B":{"first":"Canada","second":"Switzerland","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"USA","second":"Türkiye","third":"Paraguay"},"E":{"first":"Germany","second":"Ecuador","third":"Ivory Coast"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"Egypt","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Cape Verde"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Austria","third":"Algeria"},"K":{"first":"Portugal","second":"Colombia","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "Jeremy":{"A":{"first":"Mexico","second":"South Korea","third":"Czechia"},"B":{"first":"Switzerland","second":"Canada","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"USA","second":"Türkiye","third":"Paraguay"},"E":{"first":"Germany","second":"Ecuador","third":"Ivory Coast"},"F":{"first":"Sweden","second":"Netherlands","third":"Japan"},"G":{"first":"Belgium","second":"Egypt","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Cape Verde"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Austria","third":"Algeria"},"K":{"first":"Portugal","second":"Colombia","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "Will":{"A":{"first":"Mexico","second":"South Korea","third":"Czechia"},"B":{"first":"Canada","second":"Switzerland","third":"Qatar"},"C":{"first":"Brazil","second":"Scotland","third":"Morocco"},"D":{"first":"USA","second":"Paraguay","third":"Australia"},"E":{"first":"Germany","second":"Ecuador","third":"Ivory Coast"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"Egypt","third":"New Zealand"},"H":{"first":"Spain","second":"Uruguay","third":"Cape Verde"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Colombia","second":"Portugal","third":"Uzbekistan"},"L":{"first":"England","second":"Croatia","third":"Panama"}},
+  "Freddie":{"A":{"first":"Mexico","second":"South Korea","third":"South Africa"},"B":{"first":"Switzerland","second":"Canada","third":"Bosnia and Herzegovina"},"C":{"first":"Morocco","second":"Brazil","third":"Scotland"},"D":{"first":"Türkiye","second":"USA","third":"Paraguay"},"E":{"first":"Germany","second":"Ecuador","third":"Ivory Coast"},"F":{"first":"Japan","second":"Netherlands","third":"Sweden"},"G":{"first":"Belgium","second":"Iran","third":"New Zealand"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Algeria","third":"Jordan"},"K":{"first":"Portugal","second":"Colombia","third":"Uzbekistan"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "Mark":{"A":{"first":"Mexico","second":"South Korea","third":"South Africa"},"B":{"first":"Switzerland","second":"Canada","third":"Bosnia and Herzegovina"},"C":{"first":"Morocco","second":"Brazil","third":"Scotland"},"D":{"first":"Türkiye","second":"USA","third":"Australia"},"E":{"first":"Germany","second":"Ivory Coast","third":"Ecuador"},"F":{"first":"Japan","second":"Netherlands","third":"Sweden"},"G":{"first":"Belgium","second":"Egypt","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Senegal","third":"Norway"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Portugal","second":"DR Congo","third":"Uzbekistan"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "JoTavious":{"A":{"first":"Mexico","second":"South Korea","third":"South Africa"},"B":{"first":"Switzerland","second":"Canada","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"United States","second":"Turkey","third":"Paraguay"},"E":{"first":"Germany","second":"Ivory Coast","third":"Ecuador"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"Egypt","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Senegal","third":"Norway"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Colombia","second":"Portugal","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "Jeff":{"A":{"first":"Mexico","second":"South Korea","third":"South Africa"},"B":{"first":"Switzerland","second":"Canada","third":"Qatar"},"C":{"first":"Morocco","second":"Brazil","third":"Scotland"},"D":{"first":"Australia","second":"United States","third":"Turkey"},"E":{"first":"Ecuador","second":"Germany","third":"Ivory Coast"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"New Zealand","third":"Egypt"},"H":{"first":"Spain","second":"Uruguay","third":"Cape Verde"},"I":{"first":"France","second":"Senegal","third":"Norway"},"J":{"first":"Argentina","second":"Austria","third":"Algeria"},"K":{"first":"Portugal","second":"Colombia","third":"Uzbekistan"},"L":{"first":"England","second":"Croatia","third":"Panama"}},
+  "Rodo":{"A":{"first":"South Africa","second":"Mexico","third":"Czech Republic"},"B":{"first":"Canada","second":"Switzerland","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"Turkey","second":"United States","third":"Paraguay"},"E":{"first":"Germany","second":"Ivory Coast","third":"Ecuador"},"F":{"first":"Japan","second":"Netherlands","third":"Sweden"},"G":{"first":"Belgium","second":"Egypt","third":"New Zealand"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Senegal","third":"Norway"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Portugal","second":"Colombia","third":"Uzbekistan"},"L":{"first":"England","second":"Croatia","third":"Panama"}},
+  "Christian":{"A":{"first":"Mexico","second":"South Korea","third":"South Africa"},"B":{"first":"Canada","second":"Switzerland","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"Paraguay","second":"United States","third":"Australia"},"E":{"first":"Germany","second":"Ecuador","third":"Curacao"},"F":{"first":"Japan","second":"Netherlands","third":"Tunisia"},"G":{"first":"Belgium","second":"New Zealand","third":"Egypt"},"H":{"first":"Spain","second":"Uruguay","third":"Cape Verde"},"I":{"first":"France","second":"Senegal","third":"Norway"},"J":{"first":"Argentina","second":"Austria","third":"Algeria"},"K":{"first":"Portugal","second":"Colombia","third":"DR Congo"},"L":{"first":"England","second":"Panama","third":"Ghana"}},
+  "Gilbert":{"A":{"first":"Mexico","second":"South Korea","third":"Czechia"},"B":{"first":"Switzerland","second":"Qatar","third":"Canada"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"USA","second":"Türkiye","third":"Paraguay"},"E":{"first":"Germany","second":"Ecuador","third":"Ivory Coast"},"F":{"first":"Netherlands","second":"Sweden","third":"Japan"},"G":{"first":"Belgium","second":"Egypt","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Senegal","third":"Norway"},"J":{"first":"Argentina","second":"Austria","third":"Algeria"},"K":{"first":"Portugal","second":"Colombia","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "Ice":{"A":{"first":"Mexico","second":"Czechia","third":"South Korea"},"B":{"first":"Switzerland","second":"Canada","third":"Bosnia and Herzegovina"},"C":{"first":"Morocco","second":"Brazil","third":"Scotland"},"D":{"first":"Paraguay","second":"USA","third":"Türkiye"},"E":{"first":"Germany","second":"Ivory Coast","third":"Ecuador"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"Egypt","third":"New Zealand"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Senegal","third":"Norway"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Colombia","second":"Portugal","third":"DR Congo"},"L":{"first":"Panama","second":"England","third":"Croatia"}},
+  "Cesar":{"A":{"first":"Mexico","second":"Czechia","third":"South Korea"},"B":{"first":"Canada","second":"Switzerland","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"USA","second":"Paraguay","third":"Türkiye"},"E":{"first":"Germany","second":"Ecuador","third":"Ivory Coast"},"F":{"first":"Netherlands","second":"Sweden","third":"Japan"},"G":{"first":"Belgium","second":"Egypt","third":"New Zealand"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Austria","third":"Algeria"},"K":{"first":"Portugal","second":"Colombia","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "Kelly":{"A":{"first":"Mexico","second":"South Korea","third":"South Africa"},"B":{"first":"Switzerland","second":"Canada","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"USA","second":"Türkiye","third":"Australia"},"E":{"first":"Germany","second":"Ivory Coast","third":"Ecuador"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"New Zealand","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Portugal","second":"Colombia","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Panama"}},
+  "David":{"A":{"first":"Mexico","second":"South Korea","third":"Czech Republic"},"B":{"first":"Canada","second":"Switzerland","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"United States","second":"Turkey","third":"Australia"},"E":{"first":"Germany","second":"Ivory Coast","third":"Ecuador"},"F":{"first":"Netherlands","second":"Sweden","third":"Japan"},"G":{"first":"Belgium","second":"Egypt","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Portugal","second":"Colombia","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "Ronaldo":{"A":{"first":"Mexico","second":"South Korea","third":"South Africa"},"B":{"first":"Switzerland","second":"Canada","third":"Bosnia and Herzegovina"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"United States","second":"Turkey","third":"Australia"},"E":{"first":"Germany","second":"Ivory Coast","third":"Ecuador"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"New Zealand","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Portugal","second":"Colombia","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Panama"}},
+  "Julian":{"A":{"first":"Mexico","second":"South Korea","third":"South Africa"},"B":{"first":"Canada","second":"Qatar","third":"Switzerland"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"USA","second":"Paraguay","third":"Australia"},"E":{"first":"Germany","second":"Ecuador","third":"Ivory Coast"},"F":{"first":"Japan","second":"Netherlands","third":"Sweden"},"G":{"first":"Belgium","second":"Iran","third":"Egypt"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Austria","third":"Algeria"},"K":{"first":"Portugal","second":"Colombia","third":"Uzbekistan"},"L":{"first":"England","second":"Croatia","third":"Panama"}},
+  "Andy":{"A":{"first":"Mexico","second":"South Korea","third":"Czechia"},"B":{"first":"Switzerland","second":"Canada","third":"Qatar"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"Paraguay","second":"Türkiye","third":"USA"},"E":{"first":"Germany","second":"Ivory Coast","third":"Ecuador"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"Egypt","third":"New Zealand"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Algeria","third":"Austria"},"K":{"first":"Portugal","second":"Colombia","third":"Uzbekistan"},"L":{"first":"England","second":"Croatia","third":"Panama"}},
+  "Parker":{"A":{"first":"South Korea","second":"South Africa","third":"Mexico"},"B":{"first":"Switzerland","second":"Canada","third":"Qatar"},"C":{"first":"Brazil","second":"Scotland","third":"Morocco"},"D":{"first":"USA","second":"Türkiye","third":"Australia"},"E":{"first":"Germany","second":"Ecuador","third":"Ivory Coast"},"F":{"first":"Netherlands","second":"Japan","third":"Sweden"},"G":{"first":"Belgium","second":"New Zealand","third":"Egypt"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Austria","third":"Algeria"},"K":{"first":"Colombia","second":"Portugal","third":"DR Congo"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+  "Juan":{"A":{"first":"South Korea","second":"Mexico","third":"South Africa"},"B":{"first":"Switzerland","second":"Canada","third":"Qatar"},"C":{"first":"Brazil","second":"Morocco","third":"Scotland"},"D":{"first":"Turkey","second":"United States","third":"Australia"},"E":{"first":"Ecuador","second":"Germany","third":"Ivory Coast"},"F":{"first":"Japan","second":"Netherlands","third":"Sweden"},"G":{"first":"Belgium","second":"Egypt","third":"Iran"},"H":{"first":"Spain","second":"Uruguay","third":"Saudi Arabia"},"I":{"first":"France","second":"Norway","third":"Senegal"},"J":{"first":"Argentina","second":"Austria","third":"Jordan"},"K":{"first":"Colombia","second":"Portugal","third":"Uzbekistan"},"L":{"first":"England","second":"Croatia","third":"Ghana"}},
+};
+
+const BEST_THIRD = {
+  "Gurdit":["Czechia","Ivory Coast","Algeria","Senegal","Cape Verde","Scotland","Sweden","Ghana"],
+  "Jeremy":["Japan","Senegal","Scotland","Paraguay","Czechia","DR Congo","Algeria","Ghana"],
+  "Will":["Panama","Australia","Czechia","Ivory Coast","Sweden","Cape Verde","Uzbekistan","Senegal"],
+  "Freddie":["Scotland","Senegal","Sweden","Paraguay","Ghana","Uzbekistan","Jordan","Saudi Arabia"],
+  "Mark":["Norway","Ivory Coast","Austria","South Africa","Australia","Sweden","Ghana","Scotland"],
+  "JoTavious":["Norway","Ecuador","Paraguay","Sweden","Ghana","Iran","Austria","DR Congo"],
+  "Jeff":["Egypt","Ivory Coast","South Africa","Sweden","Turkey","Scotland","Panama","Norway"],
+  "Rodo":["Paraguay","Ecuador","Austria","Norway","Sweden","Scotland","Panama","Romania"],
+  "Christian":["Australia","South Africa","Egypt","Saudi Arabia","Curacao","Scotland","Bosnia and Herzegovina","Algeria"],
+  "Gilbert":["Norway","Ghana","Canada","Japan","Paraguay","Algeria","DR Congo","Ivory Coast"],
+  "Ice":["Croatia","Ecuador","Sweden","Scotland","Norway","Austria","Türkiye","New Zealand"],
+  "Cesar":["Türkiye","Ivory Coast","Scotland","Ghana","South Korea","Algeria","New Zealand","Saudi Arabia"],
+  "Kelly":["Sweden","Ecuador","Scotland","DR Congo","Saudi Arabia","Iran","Senegal","Australia"],
+  "David":["Senegal","Ghana","Iran","Czech Republic","Austria","Japan","Bosnia and Herzegovina","Saudi Arabia"],
+  "Ronaldo":["Sweden","Ecuador","Scotland","DR Congo","Saudi Arabia","Iran","Senegal","Australia"],
+  "Julian":["South Africa","Scotland","Switzerland","Australia","Saudi Arabia","Sweden","Senegal","Algeria"],
+  "Andy":["Senegal","USA","Sweden","Scotland","Panama","Ecuador","Saudi Arabia","New Zealand"],
+  "Parker":["Senegal","Morocco","Saudi Arabia","Egypt","Algeria","Mexico","Australia","Sweden"],
+  "Juan":["Sweden","Ivory Coast","Senegal","Australia","Scotland","Ghana","Iran","South Africa"],
+};
+
+// ====================== STATE ======================
+let actualResults = {}; // {matchId: "H"|"D"|"A"}
+let liveMatchData = {}; // {matchId: {score, status}}
+let matchGoals = {};  // {matchId: {home:N, away:N}}
+let teamCrests = {};  // {normTeamName: crestUrl}
+let refreshInterval = null;
+
+// Team name aliases: API name → our name
+const TEAM_ALIASES = {
+  'korea republic': 'south korea', 'czechia': 'czech republic',
+  'cote d\'ivoire': 'ivory coast', "côte d'ivoire": 'ivory coast',
+  'usa': 'united states', 'us': 'united states',
+  'türkiye': 'turkey', 'turkiye': 'turkey',
+  'bosnia-herzegovina': 'bosnia and herzegovina',
+  'bosnia & herzegovina': 'bosnia and herzegovina',
+  'cabo verde': 'cape verde', 'cape verde islands': 'cape verde',
+  'dr congo': 'dr congo', 'congo dr': 'dr congo',
+  'curacao': 'curaçao',
+};
+
+function normTeam(name) {
+  if (!name) return '';
+  const lower = name.toLowerCase().trim();
+  return TEAM_ALIASES[lower] || lower;
+}
+
+function crest(teamName, size = 20) {
+  const url = teamCrests[normTeam(teamName)];
+  if (!url) return '';
+  return `<img src="${url}" alt="" width="${size}" height="${size}" style="vertical-align:middle;margin-right:5px;object-fit:contain;border-radius:2px" onerror="this.style.display='none'">`;
+}
+
+const API_KEY = 'f0e1a7c5a1b943c8b96aa10beb6e2ead';
+
+function setStatus(state, msg) {
+  const dot = document.getElementById('liveStatusDot');
+  const txt = document.getElementById('liveStatusText');
+  if (!dot || !txt) return;
+  dot.className = 'status-dot' + (state === 'live' ? ' live' : state === 'error' ? ' error' : state === 'stale' ? ' stale' : '');
+  txt.textContent = msg;
+}
+
+// ── LIVE FETCH ──
+async function fetchLiveResults() {
+  setStatus('stale', 'Fetching results…');
+  try {
+    const apiUrl = 'https://api.football-data.org/v4/competitions/WC/matches?stage=GROUP_STAGE';
+    const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(apiUrl);
+    const res = await fetch(proxyUrl, {
+      headers: { 'X-Auth-Token': API_KEY }
+    });
+    if (res.status === 403 || res.status === 401) {
+      setStatus('error', 'Invalid API key — check your key and reconnect.');
+      return;
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    processApiMatches(data.matches || []);
+    const now = new Date().toLocaleTimeString();
+    const filled = Object.keys(actualResults).length;
+    setStatus('live', `Live · ${filled}/72 results · Last updated ${now}`);
+    renderAll();
+  } catch(e) {
+    setStatus('error', `Error: ${e.message}`);
+  }
+}
+
+function processApiMatches(apiMatches) {
+  actualResults = {};
+  liveMatchData = {};
+  matchGoals = {};
+  teamCrests = {};
+  apiMatches.forEach(am => {
+    const homeNorm = normTeam(am.homeTeam?.name || '');
+    const awayNorm = normTeam(am.awayTeam?.name || '');
+    // Find our match by normalised team names
+    const match = MATCHES.find(m =>
+      normTeam(m.home) === homeNorm && normTeam(m.away) === awayNorm
+    );
+    if (!match) return;
+    const status = am.status; // SCHEDULED, TIMED, IN_PLAY, PAUSED, FINISHED, SUSPENDED, POSTPONED
+    const full = am.score?.fullTime;
+    const hg = full?.home ?? null;
+    const ag = full?.away ?? null;
+
+    if (status === 'FINISHED' && hg !== null && ag !== null) {
+      actualResults[match.id] = hg > ag ? 'H' : hg < ag ? 'A' : 'D';
+      liveMatchData[match.id] = { score: `${hg}–${ag}`, status: 'FINISHED' };
+      matchGoals[match.id] = { home: hg, away: ag };
+      if (am.homeTeam?.crest) teamCrests[normTeam(am.homeTeam.name)] = am.homeTeam.crest;
+      if (am.awayTeam?.crest) teamCrests[normTeam(am.awayTeam.name)] = am.awayTeam.crest;
+    } else if (status === 'IN_PLAY' || status === 'PAUSED') {
+      const curr = am.score?.fullTime || am.score?.halfTime || {};
+      liveMatchData[match.id] = { score: `${curr.home ?? 0}–${curr.away ?? 0}`, status: 'IN_PROGRESS' };
+    }
+    if (am.homeTeam?.crest) teamCrests[normTeam(am.homeTeam.name)] = am.homeTeam.crest;
+    if (am.awayTeam?.crest) teamCrests[normTeam(am.awayTeam.name)] = am.awayTeam.crest;
+  });
+}
+
+
+// ── GROUP STANDINGS HELPERS ──
+function isGroupComplete(group) {
+  return MATCHES.filter(m => m.group === group).every(m => actualResults[m.id]);
+}
+
+function getGroupStandings(group) {
+  const teams = [...new Set(MATCHES.filter(m => m.group === group).flatMap(m => [m.home, m.away]))];
+  const stats = {};
+  teams.forEach(t => { stats[t] = { p:0, w:0, d:0, l:0, gf:0, ga:0, pts:0 }; });
+  MATCHES.filter(m => m.group === group).forEach(m => {
+    const g = matchGoals[m.id];
+    if (!g) return;
+    stats[m.home].p++; stats[m.away].p++;
+    stats[m.home].gf += g.home; stats[m.home].ga += g.away;
+    stats[m.away].gf += g.away; stats[m.away].ga += g.home;
+    if (g.home > g.away) { stats[m.home].w++; stats[m.home].pts += 3; stats[m.away].l++; }
+    else if (g.home < g.away) { stats[m.away].w++; stats[m.away].pts += 3; stats[m.home].l++; }
+    else { stats[m.home].d++; stats[m.home].pts++; stats[m.away].d++; stats[m.away].pts++; }
+  });
+  return Object.entries(stats).map(([team, s]) => ({ team, ...s, gd: s.gf - s.ga }))
+    .sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team));
+}
+
+function getAllThirdPlaceTeams() {
+  const groups = [...new Set(MATCHES.map(m => m.group))];
+  const thirds = [];
+  groups.forEach(g => {
+    const standings = getGroupStandings(g);
+    if (standings.length >= 3) thirds.push({ group: g, ...standings[2] });
+  });
+  return thirds.sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team));
+}
+
+function initLiveFeed() {
+  setStatus('stale', 'Connecting…');
+  fetchLiveResults();
+  if (refreshInterval) clearInterval(refreshInterval);
+  refreshInterval = setInterval(fetchLiveResults, 60000);
+}
+
+// ====================== SCORING ======================
+function calcGamePoints(participant) {
+  let pts = 0;
+  const picks = GAME_PICKS[participant] || {};
+  for (const matchId in picks) {
+    if (actualResults[matchId] && picks[matchId] === actualResults[matchId]) pts++;
+  }
+  return pts;
+}
+
+function calcGroupPoints(participant) {
+  // Rules:
+  // - Correct 1st place → 5 pts
+  // - Correct 2nd place → 4 pts
+  // - Correct 3rd place pick → 0 pts (3rd only scored via Best 3rd ranking)
+  // - Team picked for 1st or 2nd qualifies (top 2) but wrong position → 2 pts
+  // Only counted when all 6 matches in a group are finished
+  let pts = 0;
+  const picks = GROUP_PICKS[participant] || {};
+  [...new Set(MATCHES.map(m => m.group))].forEach(g => {
+    if (!isGroupComplete(g)) return;
+    const standings = getGroupStandings(g);
+    const actual1 = normTeam(standings[0]?.team || '');
+    const actual2 = normTeam(standings[1]?.team || '');
+    const qualifiers = [actual1, actual2];
+    const pick = picks[g] || {};
+    const p1 = normTeam(pick.first || '');
+    const p2 = normTeam(pick.second || '');
+
+    if (p1) {
+      if (p1 === actual1) pts += 5;
+      else if (qualifiers.includes(p1)) pts += 2;
+    }
+    if (p2) {
+      if (p2 === actual2) pts += 4;
+      else if (qualifiers.includes(p2)) pts += 2;
+    }
+    // 3rd place pick → 0 pts always
+  });
+  return pts;
+}
+
+function calcBestThirdPoints(participant) {
+  // 2 pts per correctly predicted advancing 3rd-place team (order doesn't matter)
+  // Only when all 72 group stage matches are finished
+  if (Object.keys(actualResults).length < 72) return 0;
+  const advancing = getAllThirdPlaceTeams().slice(0, 8).map(t => normTeam(t.team));
+  const picks = (BEST_THIRD[participant] || []).map(t => normTeam(t));
+  return picks.filter(t => advancing.includes(t)).length * 2;
+}
+
+function calcTotalPoints(participant) {
+  return calcGamePoints(participant) + calcGroupPoints(participant) + calcBestThirdPoints(participant);
+}
+
+function getLeaderboardData() {
+  return PARTICIPANTS.map(p => ({
+    name: p,
+    game: calcGamePoints(p),
+    group: calcGroupPoints(p),
+    best3: calcBestThirdPoints(p),
+    total: calcTotalPoints(p),
+  })).sort((a, b) => b.total - a.total || b.game - a.game || a.name.localeCompare(b.name));
+}
+
+// ====================== RENDER FUNCTIONS ======================
+function renderAll() {
+  renderLeaderboard();
+  renderMatches();
+  renderGamePicks();
+}
+
+function renderLeaderboard() {
+  const data = getLeaderboardData();
+  const completed = Object.keys(actualResults).length;
+  const total = MATCHES.length;
+  const pct = Math.round(completed / total * 100);
+
+  let html = `<div class="progress-wrap">
+    <div class="progress-label"><span>Match Progress</span><span>${completed}/${total} matches entered</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+  </div>
+  <div class="leaderboard">
+    <div class="leaderboard-header"><div>Rank</div><div>Participant</div><div style="text-align:center">Game Pts</div><div style="text-align:center">Group Pts</div><div style="text-align:center">Best 3rd</div><div style="text-align:center">Total</div></div>`;
+
+  let rank = 1;
+  data.forEach((p, i) => {
+    if (i > 0 && p.total < data[i-1].total) rank = i + 1;
+    const rc = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+    const badgeCls = rank <= 3 ? `rank-${rank}` : 'rank-other';
+    const totalCls = p.total === 0 ? 'pts-total zero' : 'pts-total';
+    html += `<div class="lb-row ${rc}" onclick="selectParticipant('${p.name}')">
+      <div><div class="rank-badge ${badgeCls}">${rank}</div></div>
+      <div class="participant-name">${p.name}</div>
+      <div class="pts-game">${p.game}</div>
+      <div class="pts-group">${p.group}</div>
+      <div class="pts-group" style="color:var(--purple)">${p.best3}</div>
+      <div class="${totalCls}">${p.total}</div>
+    </div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('leaderboard-container').innerHTML = html;
+}
+
+function renderMatches() {
+  const groups = [...new Set(MATCHES.map(m => m.group))];
+  let html = '';
+  groups.forEach(g => {
+    const gMatches = MATCHES.filter(m => m.group === g);
+    html += `<div class="group-section">
+      <div class="group-header"><div class="group-pill">Group ${g}</div></div>
+      <div class="matches-grid">`;
+    gMatches.forEach(m => {
+      const res = actualResults[m.id];
+      const live = liveMatchData[m.id] || {};
+      let badge = '';
+      if (live.status === 'IN_PROGRESS') {
+        badge = `<div class="match-result-badge live-now">🔴 LIVE &nbsp;${live.score}</div>`;
+      } else if (res === 'H') {
+        badge = `<div class="match-result-badge H">${crest(m.home,16)}${m.home}${live.score ? ` &nbsp;${live.score}` : ''}</div>`;
+      } else if (res === 'D') {
+        badge = `<div class="match-result-badge D">Draw${live.score ? ` &nbsp;${live.score}` : ''}</div>`;
+      } else if (res === 'A') {
+        badge = `<div class="match-result-badge A">${crest(m.away,16)}${m.away}${live.score ? ` &nbsp;${live.score}` : ''}</div>`;
+      } else {
+        badge = `<div class="match-result-badge pending">Upcoming</div>`;
+      }
+      html += `<div class="match-card">
+        <div class="match-id">Match ${m.id}</div>
+        <div class="match-teams">
+          <div class="team-name home">${crest(m.home, 22)}${m.home}</div>
+          <div class="vs-badge">vs</div>
+          <div class="team-name away">${crest(m.away, 22)}${m.away}</div>
+        </div>
+        ${badge}
+      </div>`;
+    });
+    // Group standings table
+    const standings = getGroupStandings(g);
+    const complete = isGroupComplete(g);
+    html += `<div class="group-standings">
+      <div class="standings-title">${complete ? '✅ Final Standings' : '📊 Current Standings'} — Group ${g}</div>
+      <table class="standings-table">
+        <thead><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead>
+        <tbody>`;
+    standings.forEach((row, idx) => {
+      const cls = idx === 0 ? 'st-first' : idx === 1 ? 'st-second' : idx === 2 ? 'st-third' : '';
+      html += `<tr class="${cls}">
+        <td>${idx+1}</td><td class="st-team">${crest(row.team, 18)}${row.team}</td>
+        <td>${row.p}</td><td>${row.w}</td><td>${row.d}</td><td>${row.l}</td>
+        <td>${row.gf}</td><td>${row.ga}</td>
+        <td>${row.gd >= 0 ? '+' + row.gd : row.gd}</td>
+        <td class="st-pts">${row.pts}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+
+    html += '</div>';
+  });
+
+  // Best 3rd Place Race
+  const thirds = getAllThirdPlaceTeams();
+  if (thirds.some(t => t.p > 0)) {
+    const allDone = Object.keys(actualResults).length === 72;
+    html += `<div class="group-section">
+      <div class="group-header"><div class="group-pill" style="background:var(--purple)">Best 3rd Place Race</div><span style="font-size:0.78rem;color:var(--muted)">Top 8 advance · Ranked by Pts → GD → GF</span></div>
+      <table class="standings-table" style="margin-top:8px">
+        <thead><tr><th>#</th><th>Group</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Status</th></tr></thead>
+        <tbody>`;
+    thirds.forEach((row, idx) => {
+      const advancing = idx < 8;
+      const statusBadge = allDone
+        ? (advancing ? '<span class="adv-badge adv">✓ ADV</span>' : '<span class="adv-badge elim">✗ OUT</span>')
+        : (advancing ? '<span class="adv-badge lead">Leading</span>' : '<span class="adv-badge trail">Behind</span>');
+      html += `<tr class="${advancing ? 'st-advancing' : 'st-out'}">
+        <td>${idx+1}</td><td><span class="group-tag">${row.group}</span></td><td class="st-team">${crest(row.team, 18)}${row.team}</td>
+        <td>${row.p}</td><td>${row.w}</td><td>${row.d}</td><td>${row.l}</td>
+        <td>${row.gf}</td><td>${row.ga}</td>
+        <td>${row.gd >= 0 ? '+' + row.gd : row.gd}</td>
+        <td class="st-pts">${row.pts}</td>
+        <td>${statusBadge}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  }
+
+  document.getElementById('matches-container').innerHTML = html;
+}
+
+function selectParticipant(name) {
+  document.getElementById('participantPicker').value = name;
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="participant"]').classList.add('active');
+  document.getElementById('tab-participant').classList.add('active');
+  renderParticipantPicks();
+}
+
+function renderParticipantPicks() {
+  const name = document.getElementById('participantPicker')?.value;
+  const statsEl = document.getElementById('participant-stats');
+  const containerEl = document.getElementById('participant-container');
+  if (!name) { containerEl.innerHTML = ''; statsEl.innerHTML = ''; return; }
+
+  const picks = GAME_PICKS[name] || {};
+  const gamePts = calcGamePoints(name);
+  let correct = 0, played = 0;
+  for (const mid in picks) {
+    if (actualResults[mid]) { played++; if (picks[mid] === actualResults[mid]) correct++; }
+  }
+
+  statsEl.innerHTML = `
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-label">Game Points</div><div class="stat-value blue">${gamePts}</div></div>
+      <div class="stat-card"><div class="stat-label">Correct Picks</div><div class="stat-value green">${correct}</div></div>
+      <div class="stat-card"><div class="stat-label">Games Played</div><div class="stat-value">${played}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Points</div><div class="stat-value gold">${calcTotalPoints(name)}</div></div>
+    </div>`;
+
+  const groups = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+  let html = '';
+
+  // ── Section 1: Game Picks ──
+  html += `<div class="participant-section-title">Game Picks</div>`;
+  groups.forEach(g => {
+    const gMatches = MATCHES.filter(m => m.group === g);
+    const gPick = GROUP_PICKS[name]?.[g];
+    html += `<div class="group-section">
+      <div class="group-header">
+        <div class="group-pill">Group ${g}</div>`;
+    if (gPick) {
+      html += `<span style="font-size:0.78rem;color:var(--muted)">Group pick: <strong style="color:var(--text)">${gPick.first}</strong> · <strong style="color:var(--text)">${gPick.second}</strong> · <strong style="color:var(--text)">${gPick.third}</strong></span>`;
+    }
+    html += `</div>
+      <div style="overflow-x:auto"><table class="picks-table">
+        <thead><tr><th>Match</th><th>Home</th><th>Away</th><th>Pick</th><th>Actual</th><th>Pts</th></tr></thead>
+        <tbody>`;
+    gMatches.forEach(m => {
+      const pick = picks[m.id] || '-';
+      const actual = actualResults[m.id] || '-';
+      let pts = '-', rowCls = '';
+      if (actual !== '-') {
+        pts = pick === actual ? '1' : '0';
+        rowCls = pick === actual ? 'correct' : 'wrong';
+      } else { rowCls = 'pending'; }
+      const pickLabel = pick === 'H' ? `H — ${crest(m.home,14)}${m.home}` : pick === 'A' ? `A — ${crest(m.away,14)}${m.away}` : pick === 'D' ? 'Draw' : '-';
+      const actualLabel = actual === 'H' ? `H — ${crest(m.home,14)}${m.home}` : actual === 'A' ? `A — ${crest(m.away,14)}${m.away}` : actual === 'D' ? 'Draw' : '—';
+      html += `<tr>
+        <td style="color:var(--muted);font-size:0.78rem">${m.id}</td>
+        <td>${crest(m.home,16)}${m.home}</td><td>${crest(m.away,16)}${m.away}</td>
+        <td><strong>${pickLabel}</strong></td>
+        <td class="${rowCls}">${actualLabel}</td>
+        <td class="${rowCls}" style="font-weight:800">${pts}</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  });
+
+  // ── Section 2: Group Position Picks ──
+  html += `<div class="participant-section-title" style="margin-top:32px">Group Position Picks</div>
+    <div style="overflow-x:auto"><table class="picks-table">
+      <thead><tr><th>Group</th><th>1st Pick</th><th>2nd Pick</th><th>3rd Pick</th><th>1st Pts</th><th>2nd Pts</th><th>3rd Pts</th></tr></thead>
+      <tbody>`;
+  groups.forEach(g => {
+    const pick = GROUP_PICKS[name]?.[g];
+    if (!pick) return;
+    const complete = isGroupComplete(g);
+    const standings = complete ? getGroupStandings(g) : null;
+    const actual1 = standings?.[0]?.team, actual2 = standings?.[1]?.team;
+    const qualifiers = complete ? [normTeam(actual1), normTeam(actual2)] : [];
+    const p1 = normTeam(pick.first || ''), p2 = normTeam(pick.second || '');
+    const exact1 = complete && p1 === normTeam(actual1);
+    const exact2 = complete && p2 === normTeam(actual2);
+    const consol1 = complete && !exact1 && qualifiers.includes(p1);
+    const consol2 = complete && !exact2 && qualifiers.includes(p2);
+    const pts1 = exact1 ? 5 : consol1 ? 2 : 0;
+    const pts2 = exact2 ? 4 : consol2 ? 2 : 0;
+    const cls1 = complete ? (exact1 ? 'correct' : consol1 ? 'consol' : 'wrong') : 'pending';
+    const cls2 = complete ? (exact2 ? 'correct' : consol2 ? 'consol' : 'wrong') : 'pending';
+    html += `<tr>
+      <td><span class="group-tag">${g}</span></td>
+      <td class="${cls1}">${pick.first}${complete ? ` <span style="color:var(--muted);font-size:0.75rem">${crest(actual1,14)}(${actual1})</span>` : ''}</td>
+      <td class="${cls2}">${pick.second}${complete ? ` <span style="color:var(--muted);font-size:0.75rem">${crest(actual2,14)}(${actual2})</span>` : ''}</td>
+      <td class="pending" style="color:var(--muted)">${pick.third}</td>
+      <td class="${cls1}" style="font-weight:800">${complete ? pts1 : '—'}</td>
+      <td class="${cls2}" style="font-weight:800">${complete ? pts2 : '—'}</td>
+      <td style="color:var(--muted)">0</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+
+  // ── Section 3: Best 3rd Place Rankings ──
+  const thirds = BEST_THIRD[name] || [];
+  const allDone = Object.keys(actualResults).length === 72;
+  const advancing = allDone ? getAllThirdPlaceTeams().slice(0, 8).map(t => normTeam(t.team)) : null;
+  const best3Pts = calcBestThirdPoints(name);
+  html += `<div class="participant-section-title" style="margin-top:32px">Best 3rd Place Rankings${allDone ? ` <span style="font-size:0.85rem;color:var(--purple)">(${best3Pts} pts)</span>` : ''}</div>
+    <div class="third-picks" style="margin-bottom:32px">`;
+  thirds.forEach((team, i) => {
+    const adv = advancing ? advancing.includes(normTeam(team)) : null;
+    const badge = advancing ? (adv ? '<span class="adv-badge adv" style="font-size:0.65rem">✓ ADV</span>' : '<span class="adv-badge elim" style="font-size:0.65rem">✗ OUT</span>') : '';
+    html += `<div class="third-pick ${advancing ? (adv ? 'correct' : 'wrong') : ''}"><span class="third-rank">#${i+1}</span>${team} ${badge}</div>`;
+  });
+  html += `</div>`;
+
+  containerEl.innerHTML = html;
+}
+
+function renderGamePicks() {
+  const groupFilter = document.getElementById('gpkGroupFilter')?.value || '';
+  const matches = groupFilter ? MATCHES.filter(m => m.group === groupFilter) : MATCHES;
+
+  // Group matches by group letter for visual separation
+  const groups = [...new Set(matches.map(m => m.group))];
+  let html = '';
+
+  groups.forEach(g => {
+    const gMatches = matches.filter(m => m.group === g);
+    html += `<div style="margin-bottom:8px;padding:6px 0 2px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)">Group ${g}</div>`;
+
+    gMatches.forEach(m => {
+      const actual = actualResults[m.id];
+      const picks = PARTICIPANTS.map(p => ({ name: p, pick: GAME_PICKS[p]?.[m.id] || '-' }));
+
+      // Stats
+      const counts = { H: 0, D: 0, A: 0 };
+      picks.forEach(pk => { if (pk.pick !== '-') counts[pk.pick]++; });
+      const correct = actual ? picks.filter(pk => pk.pick === actual).length : null;
+
+      const actualLabel = actual === 'H' ? `H — ${m.home} wins` : actual === 'A' ? `A — ${m.away} wins` : actual === 'D' ? 'D — Draw' : null;
+      const resultBadge = actual
+        ? `<span class="gp-result-badge gp-result-${actual}">${actualLabel}</span>`
+        : `<span class="gp-result-pending">Pending</span>`;
+
+      html += `<div class="gp-match-block">
+        <div class="gp-match-header">
+          <span class="gp-match-id">${m.id}</span>
+          <span class="gp-match-name">${crest(m.home,16)}${m.home} <span style="color:var(--muted);font-weight:400">vs</span> ${crest(m.away,16)}${m.away}</span>
+          ${resultBadge}
+        </div>
+        <div class="gp-picks-row">`;
+
+      picks.forEach(pk => {
+        let cls = '';
+        if (actual && pk.pick !== '-') cls = pk.pick === actual ? 'correct' : 'wrong';
+        const pickLabel = pk.pick === 'H' ? 'H' : pk.pick === 'D' ? 'D' : pk.pick === 'A' ? 'A' : '-';
+        html += `<div class="gp-pick-chip">
+          <div class="gp-pick-name">${pk.name}</div>
+          <div class="gp-pick-val ${cls}">${pickLabel}</div>
+        </div>`;
+      });
+
+      html += `</div>
+        <div class="gp-stats-row">
+          <span class="gp-stat-chip">Picks: <strong style="color:var(--green)">H ${counts.H}</strong> &bull; <strong style="color:var(--gold)">D ${counts.D}</strong> &bull; <strong style="color:var(--red)">A ${counts.A}</strong></span>`;
+      if (actual !== undefined && correct !== null) {
+        html += `<span class="gp-stat-chip">&bull; <strong style="color:var(--green)">${correct}/${PARTICIPANTS.length}</strong> correct</span>`;
+      }
+      html += `</div></div>`;
+    });
+  });
+
+  document.getElementById('gamepicks-container').innerHTML = html;
+}
+
+// ====================== INIT ======================
+function initParticipantSelects() {
+  const picker = document.getElementById('participantPicker');
+  PARTICIPANTS.forEach(p => {
+    picker.innerHTML += `<option value="${p}">${p}</option>`;
+  });
+}
+
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+initParticipantSelects();
+renderAll();
+initLiveFeed();
+</script>
+</body>
+</html>
